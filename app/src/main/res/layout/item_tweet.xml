@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="10dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ivProfileFrame"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="250dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivProfileImage"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/avatars" />
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:fontFamily="@font/twitter_chirp"
+        android:textFontWeight="700"
+        app:layout_constraintStart_toEndOf="@id/ivProfileFrame"
+        app:layout_constraintEnd_toStartOf="@id/tvTimeStamp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Name " />
+
+    <TextView
+        android:id="@+id/tvHandle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/twitter_chirp"
+        android:textFontWeight="400"
+        android:textSize="16sp"
+        android:layout_marginLeft="3dp"
+        android:textColor="@color/dark_grey"
+        app:layout_constraintStart_toEndOf="@id/imageView"
+        app:layout_constraintBottom_toBottomOf="@id/tvUsername"
+        android:text="Hello"
+        />
+
+    <TextView
+        android:id="@+id/tvTimeStamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/tvTweetBody"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="1m" />
+
+    <TextView
+        android:id="@+id/tvTweetBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/twitter_chirp"
+        android:textFontWeight="400"
+        android:autoLink="all"
+        android:textColor="@color/black"
+        android:linksClickable="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="2dp"
+        android:textColorLink="@color/twitter_blue"
+        android:textSize="16sp"
+        tools:text="This is a really really www.google.com really  really  really  really  really  really  really really really really really really really really long tweet to text our layout"
+        app:layout_constraintStart_toEndOf="@id/ivProfileFrame"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constrainedWidth="true"
+        />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvTweetBody"
+        app:layout_constraintTop_toBottomOf="@id/tvTweetBody"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_message"
+                android:layout_marginRight="3.5dp"
+                />
+
+            <TextView
+                android:id="@+id/tvMsgCount"
+                tools:text = "10"
+                android:fontFamily="@font/twitter_chirp"
+                android:textFontWeight="400"
+                android:textSize="12sp"
+                android:textColor="@color/dark_grey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_retweet"
+                android:layout_marginRight="3.5dp"
+                />
+
+            <TextView
+                android:id="@+id/rvRetweetCount"
+                tools:text = "10"
+                android:fontFamily="@font/twitter_chirp"
+                android:textFontWeight="400"
+                android:textSize="12sp"
+                android:textColor="@color/dark_grey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_like"
+                android:layout_marginRight="3.5dp"
+                />
+
+            <TextView
+                android:id="@+id/tvFavCount"
+                tools:text = "10"
+                android:fontFamily="@font/twitter_chirp"
+                android:textFontWeight="400"
+                android:textColor="@color/dark_grey"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_sharetweet"
+                android:layout_marginRight="5dp"
+                />
+
+            <TextView
+                android:id="@+id/ic_sharetweet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="3dp"
+        app:tint="@color/twitter_blue"
+        app:layout_constraintBottom_toBottomOf="@id/tvUsername"
+        app:layout_constraintStart_toEndOf="@id/tvUsername"
+        app:layout_constraintTop_toTopOf="@+id/tvUsername"
+        tools:srcCompat="@tools:sample/avatars" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
