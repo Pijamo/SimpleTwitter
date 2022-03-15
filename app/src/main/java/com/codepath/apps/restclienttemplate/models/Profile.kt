@@ -2,18 +2,22 @@ package com.codepath.apps.restclienttemplate.models
 
 import org.json.JSONObject
 
-class Profile {
-
-    var name: String = ""
-    var profileImageURL: String = ""
-
+data class Profile (
+    var id: Int,
+    var name: String,
+    var profileImageURL: String,
+) {
     companion object {
         fun fromJson(jsonObject: JSONObject): Profile {
-            val profile = Profile()
-            profile.name = jsonObject.getString("name")
-            profile.profileImageURL = jsonObject.getString("profile_image_url_https")
 
-            return profile
+            val name = jsonObject.getString("name")
+            val profileImageURL = jsonObject.getString("profile_image_url_https")
+            val id = jsonObject.getInt("id")
+
+            return Profile(id, name, profileImageURL)
         }
     }
 }
+
+
+

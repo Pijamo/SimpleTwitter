@@ -1,21 +1,27 @@
 package com.codepath.apps.restclienttemplate
 
 import EndlessRecyclerViewScrollListener
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding
+import com.codepath.apps.restclienttemplate.models.Profile
 import com.codepath.apps.restclienttemplate.models.Tweet
 import com.codepath.apps.restclienttemplate.models.max_id
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
+import com.google.android.material.snackbar.Snackbar
 import okhttp3.Headers
 import org.json.JSONException
 
@@ -32,13 +38,12 @@ class TimelineActivity : AppCompatActivity() {
 
     val tweets: MutableList<Tweet> = mutableListOf()
 
-    var test: String = ""
-
     private var scrollListener: EndlessRecyclerViewScrollListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_timline)
+
+        val binding: ActivityTimelineBinding = DataBindingUtil.setContentView(this, R.layout.activity_timeline)
 
         client = TwitterApplication.getRestClient(this)
         swipeContainer = findViewById(R.id.swipeContainer)
@@ -81,28 +86,40 @@ class TimelineActivity : AppCompatActivity() {
             )
         )
 
-
-
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
 
-        profileImage()
+        profileImage(binding)
+
+        val fab: View = findViewById(R.id.fab)
+        fab.setOnClickListener {
+            var dialogFragment = CustomDialogFragment()
+
+            dialogFragment.show(supportFragmentManager, "customFragment")
+        }
 
         populateHomeTimeline()
     }
 
-    fun profileImage() {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    //Handles clicks on menu Item
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun profileImage(binding: ActivityTimelineBinding) {
         client.getUserDetails(object : JsonHttpResponseHandler(){
 
             override fun onSuccess(statusCode: Int, headers: Headers?, json: JSON)  {
                 Log.i("User", "Success")
 
-                test = json.jsonObject.getString("profile_image_url_https")
+                val profile = Profile.fromJson(json.jsonObject)
 
-                val profilePhoto = findViewById<ImageView>(R.id.ivUserProfile)
+                binding.profile = profile
 
-                val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-
-                Glide.with(toolbar).load(test).into(profilePhoto)
             }
 
             override fun onFailure(
@@ -129,6 +146,7 @@ class TimelineActivity : AppCompatActivity() {
                     adapter.clear()
                     val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
                     tweets.addAll(listOfNewTweetsRetrieved)
+
                     adapter.notifyDataSetChanged()
 
                     Log.i("idTest", "Max_id = ${max_id.toString()}")

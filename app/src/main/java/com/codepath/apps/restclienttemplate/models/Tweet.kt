@@ -13,42 +13,41 @@ import kotlin.collections.ArrayList
 var max_id = MAX_VALUE
 
 @Entity
-class Tweet {
+data class Tweet (
+    @ColumnInfo
+    var body: String,
 
     @ColumnInfo
-    var body: String = ""
+    var createdAt: String,
 
     @ColumnInfo
-    var createdAt: String = ""
-
-    @ColumnInfo
-    var user: User? = null
+    var user: User?,
 
     @ColumnInfo
     @PrimaryKey
-    var id = 0L
+    var id: Long,
 
     @ColumnInfo
-    var retweet_count: Int = 0
+    var retweetCount: Int,
 
     @ColumnInfo
-    var favorite_count: Int = 0
-
+    var favoriteCount: Int,
+){
     companion object {
         fun fromJson(jsonObject: JSONObject) : Tweet {
-            val tweet = Tweet()
-            tweet.body = jsonObject.getString("text")
-            tweet.createdAt = getFormattedTimestamp(jsonObject.getString("created_at"))
-            tweet.user = User.fromJson(jsonObject.getJSONObject("user"))
-            tweet.id = jsonObject.getLong("id")
-            tweet.retweet_count = jsonObject.getInt("retweet_count")
-            tweet.favorite_count = jsonObject.getInt("favorite_count")
 
-            if (tweet.id < max_id){
-                max_id = tweet.id
+            val body = jsonObject.getString("text")
+            val createdAt = getFormattedTimestamp(jsonObject.getString("created_at"))
+            val user = User.fromJson(jsonObject.getJSONObject("user"))
+            val id = jsonObject.getLong("id")
+            val retweetCount = jsonObject.getInt("retweet_count")
+            val favoriteCount = jsonObject.getInt("favorite_count")
+
+            if (id < max_id){
+                max_id = id
             }
 
-            return tweet
+            return Tweet(body, createdAt, user, id, retweetCount, favoriteCount)
         }
 
         fun fromJsonArray(jsonArray: JSONArray): List<Tweet> {

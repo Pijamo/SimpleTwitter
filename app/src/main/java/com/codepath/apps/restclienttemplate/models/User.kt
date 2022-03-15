@@ -6,34 +6,33 @@ import androidx.room.PrimaryKey
 import org.json.JSONObject
 
 @Entity
-class User{
-
+data class User(
     @ColumnInfo
     @PrimaryKey
-    var user_id: Long = 0
+    var user_id: Long,
 
     @ColumnInfo
-    var name: String = ""
+    var name: String,
 
     @ColumnInfo
-    var screenName: String = ""
+    var screenName: String,
 
     @ColumnInfo
-    var publicImageUrl: String = ""
+    var publicImageUrl: String,
 
     @ColumnInfo
-    var isVerified: Boolean = false
-
+    var isVerified: Boolean,
+){
     companion object {
         fun fromJson(jsonObject: JSONObject): User {
-            val user = User()
-            user.user_id = jsonObject.getLong("id")
-            user.name = jsonObject.getString("name")
-            user.screenName = "@" + jsonObject.getString("screen_name")
-            user.publicImageUrl = jsonObject.getString("profile_image_url_https")
-            user.isVerified = jsonObject.getBoolean("verified")
 
-            return user
+            val user_id = jsonObject.getLong("id")
+            val name = jsonObject.getString("name")
+            val screenName = "@" + jsonObject.getString("screen_name")
+            val publicImageUrl = jsonObject.getString("profile_image_url_https")
+            val isVerified = jsonObject.getBoolean("verified")
+
+            return User(user_id, name, screenName, publicImageUrl, isVerified)
         }
     }
 }

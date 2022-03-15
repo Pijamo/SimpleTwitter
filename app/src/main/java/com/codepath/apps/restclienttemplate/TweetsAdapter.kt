@@ -1,46 +1,42 @@
 package com.codepath.apps.restclienttemplate
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding
+import com.codepath.apps.restclienttemplate.databinding.ItemTweetBinding
 import com.codepath.apps.restclienttemplate.models.Tweet
 
 class TweetsAdapter(val tweets: MutableList<Tweet>) : RecyclerView.Adapter<TweetsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TweetsAdapter.ViewHolder {
         val context = parent.context
-        val inflater = LayoutInflater.from(context)
+//        val inflater = LayoutInflater.from(context)
+//
+//
+//        //inflate our item layout
+//        val view = inflater.inflate(R.layout.item_tweet, parent, false)
 
-
-        //inflate our item layout
-        val view = inflater.inflate(R.layout.item_tweet, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false)
 
         return ViewHolder(view)
     }
 
     //incharge of binding date to the viewholder
     override fun onBindViewHolder(holder: TweetsAdapter.ViewHolder, position: Int) {
+
         // Get the data model based on the position
-        val tweet: Tweet = tweets.get(position)
+        val tweet = tweets[position]
 
-        // Set item view based on views and data model
+        Log.i("tweet", "$tweet.toString()")
 
-        holder.tvUserName.text = tweet.user?.name
-        holder.tvTweetBody.text = tweet.body
-        holder.tvTimeStamp.text = tweet.createdAt
-        holder.tvRetweet.text = tweet.retweet_count.toString()
-        holder.tvFav.text = tweet.favorite_count.toString()
-        holder.tvHandle.text = tweet.user?.screenName
+        holder.binding.tweet = tweet
+        holder.binding.executePendingBindings()
 
-        if (tweet.user?.isVerified == true){
-            holder.tvVerified.setImageResource(R.drawable.ic_verified)
-        }
-
-        Glide.with(holder.itemView).load(tweet.user?.publicImageUrl).into(holder.ivProfileImage)
     }
 
     //Tells the viewholder how many views to create
@@ -61,15 +57,11 @@ class TweetsAdapter(val tweets: MutableList<Tweet>) : RecyclerView.Adapter<Tweet
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val tvVerified = itemView.findViewById<ImageView>(R.id.imageView)
-        val ivProfileImage = itemView.findViewById<ImageView>(R.id.ivProfileImage)
-        val tvUserName = itemView.findViewById<TextView>(R.id.tvUsername)
-        val tvTweetBody = itemView.findViewById<TextView>(R.id.tvTweetBody)
-        val tvTimeStamp = itemView.findViewById<TextView>(R.id.tvTimeStamp)
-        val tvFav = itemView.findViewById<TextView>(R.id.tvFavCount)
-        val tvRetweet = itemView.findViewById<TextView>(R.id.rvRetweetCount)
-        val tvHandle = itemView.findViewById<TextView>(R.id.tvHandle)
+        // Since the layout was already inflated within onCreateViewHolder(), we
+        // can use this bind() method to associate the layout variables
+        // with the layout.
+        var binding: ItemTweetBinding = ItemTweetBinding.bind(itemView)
     }
 }
