@@ -1,17 +1,14 @@
 package com.codepath.apps.restclienttemplate
 
 import EndlessRecyclerViewScrollListener
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +18,6 @@ import com.codepath.apps.restclienttemplate.models.Profile
 import com.codepath.apps.restclienttemplate.models.Tweet
 import com.codepath.apps.restclienttemplate.models.max_id
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
-import com.google.android.material.snackbar.Snackbar
 import okhttp3.Headers
 import org.json.JSONException
 
@@ -92,22 +88,12 @@ class TimelineActivity : AppCompatActivity() {
 
         val fab: View = findViewById(R.id.fab)
         fab.setOnClickListener {
-            var dialogFragment = CustomDialogFragment()
+            var dialogFragment = ComposeFragment()
 
             dialogFragment.show(supportFragmentManager, "customFragment")
         }
 
         populateHomeTimeline()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    //Handles clicks on menu Item
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return super.onOptionsItemSelected(item)
     }
 
     fun profileImage(binding: ActivityTimelineBinding) {
