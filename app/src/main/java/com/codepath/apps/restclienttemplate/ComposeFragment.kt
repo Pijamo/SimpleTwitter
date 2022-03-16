@@ -5,19 +5,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.view.inputmethod.EditorInfo
+import android.widget.*
+import android.widget.TextView.OnEditorActionListener
 import androidx.fragment.app.DialogFragment
+import com.bumptech.glide.Glide
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import okhttp3.Headers
 
-class ComposeFragment: DialogFragment() {
+
+class ComposeFragment() : DialogFragment(){
 
     lateinit var etCompose: EditText
     lateinit var btnTweet: Button
+    lateinit var ivProfileImage: ImageView
+
+    lateinit var closebutton: ImageButton
 
     lateinit var client: TwitterClient
+    lateinit var profileURl: String
 
     override fun onStart() {
         super.onStart()
@@ -34,7 +41,13 @@ class ComposeFragment: DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.dialog_fragment, container, false)
+        return inflater.inflate(R.layout.dialog_fragment, container)
+    }
+
+    interface EditNameDialogListener {
+    }
+
+    fun sendBackResult() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,8 +55,18 @@ class ComposeFragment: DialogFragment() {
 
         etCompose = view.findViewById(R.id.etTweetCompose)
         btnTweet = view.findViewById(R.id.btnTweet)
+        profileURl = arguments?.getString("profileUrl").toString()
+        closebutton = view.findViewById(R.id.btnClose)
+
+        ivProfileImage = view.findViewById(R.id.ivProfileImage)
+
+        Glide.with(view.context).load(profileURl).fitCenter().transform(RoundedCornersTransformation(250,0)).into(ivProfileImage)
 
         client = context?.let { TwitterApplication.getRestClient(it) }!!
+
+        closebutton.setOnClickListener{
+            dismiss()
+        }
 
         btnTweet.setOnClickListener {
 
@@ -64,7 +87,9 @@ class ComposeFragment: DialogFragment() {
 
                     override fun onSuccess(statusCode: Int, headers: Headers?, json: JSON?) {
                         Log.i(TAG, "Successfully published tweet!")
-                        TODO("Not yet implemented")
+                        //TODO("Not yet implemented")
+
+                        dismiss()
                     }
 
                     override fun onFailure(
@@ -79,7 +104,19 @@ class ComposeFragment: DialogFragment() {
                 })
             }
         }
-    } companion object {
+    }
+
+
+    companion object {
+
+        fun newInstance(args: Bundle): ComposeFragment? {
+            val frag = ComposeFragment()
+            var title = "This is a title"
+            args.putString("title", title)
+            frag.arguments = args
+            return frag
+        }
+
         val TAG = "ComposeActivity"
     }
 }

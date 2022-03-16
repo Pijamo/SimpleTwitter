@@ -3,12 +3,11 @@ package com.codepath.apps.restclienttemplate
 import EndlessRecyclerViewScrollListener
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,7 +58,7 @@ class TimelineActivity : AppCompatActivity() {
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
-            android.R.color.holo_red_light);
+            android.R.color.holo_red_light)
 
         rvTweets = findViewById(R.id.rvTweets)
         adapter = TweetsAdapter(tweets)
@@ -84,19 +83,30 @@ class TimelineActivity : AppCompatActivity() {
 
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
 
-        profileImage(binding)
+        val args = Bundle()
+
+        profileImage(binding, args)
 
         val fab: View = findViewById(R.id.fab)
         fab.setOnClickListener {
-            var dialogFragment = ComposeFragment()
-
-            dialogFragment.show(supportFragmentManager, "customFragment")
+            showComposeDialog(args)
         }
 
         populateHomeTimeline()
     }
 
-    fun profileImage(binding: ActivityTimelineBinding) {
+    fun showComposeDialog(args: Bundle) {
+        val fm: FragmentManager = supportFragmentManager
+
+        val composeFragment: ComposeFragment? =
+            ComposeFragment.newInstance(args)
+
+        composeFragment?.arguments = args
+
+        composeFragment?.show(fm, "fragment_edit_name")
+    }
+
+    fun profileImage(binding: ActivityTimelineBinding, args: Bundle) {
         client.getUserDetails(object : JsonHttpResponseHandler(){
 
             override fun onSuccess(statusCode: Int, headers: Headers?, json: JSON)  {
@@ -104,8 +114,9 @@ class TimelineActivity : AppCompatActivity() {
 
                 val profile = Profile.fromJson(json.jsonObject)
 
-                binding.profile = profile
+                args.putString("profileUrl", profile.profileImageURL)
 
+                binding.profile = profile
             }
 
             override fun onFailure(
@@ -135,9 +146,9 @@ class TimelineActivity : AppCompatActivity() {
 
                     adapter.notifyDataSetChanged()
 
-                    Log.i("idTest", "Max_id = ${max_id.toString()}")
+                    Log.i("idTest", "Max_id = $max_id")
 
-                    swipeContainer.setRefreshing(false)
+                    swipeContainer.isRefreshing = false
                 } catch (e: JSONException) {
                     Log.e(TAG, "JSON Exception $e")
                 }
@@ -171,9 +182,9 @@ class TimelineActivity : AppCompatActivity() {
                         tweets.addAll(listOfNewTweetsRetrieved)
                         adapter.notifyDataSetChanged()
 
-                        Log.i("loadMore", "Max_id = ${max_id.toString()}")
+                        Log.i("loadMore", "Max_id = $max_id")
 
-                        swipeContainer.setRefreshing(false)
+                        swipeContainer.isRefreshing = false
                     } catch (e: JSONException) {
                         Log.e("loadMore", "JSON Exception $e")
                     }
