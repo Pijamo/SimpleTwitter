@@ -4,12 +4,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.WindowManager
 import androidx.recyclerview.widget.RecyclerView
-import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding
 import com.codepath.apps.restclienttemplate.databinding.ItemTweetBinding
 import com.codepath.apps.restclienttemplate.models.Tweet
+
 
 class TweetsAdapter(val tweets: MutableList<Tweet>) : RecyclerView.Adapter<TweetsAdapter.ViewHolder>() {
 

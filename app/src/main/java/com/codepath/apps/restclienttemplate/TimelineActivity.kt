@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -103,8 +105,21 @@ class TimelineActivity : AppCompatActivity() {
 
         composeFragment?.arguments = args
 
+        fm.setFragmentResultListener("requestKey", this) { requestKey, bundle ->
+
+            val tweet = bundle.get("tweet") as Tweet
+
+            tweets.add(0, tweet)
+
+            adapter.notifyItemInserted(0)
+            rvTweets.smoothScrollToPosition(0)
+
+            Log.i(TAG, bundle.toString())
+        }
+
         composeFragment?.show(fm, "fragment_edit_name")
     }
+
 
     fun profileImage(binding: ActivityTimelineBinding, args: Bundle) {
         client.getUserDetails(object : JsonHttpResponseHandler(){
@@ -142,6 +157,7 @@ class TimelineActivity : AppCompatActivity() {
                 try {
                     adapter.clear()
                     val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
+
                     tweets.addAll(listOfNewTweetsRetrieved)
 
                     adapter.notifyDataSetChanged()
@@ -204,6 +220,6 @@ class TimelineActivity : AppCompatActivity() {
     }
 
     companion object {
-        val TAG = "TimelineActivity"
+        const val TAG = "TimelineActivity"
     }
 }

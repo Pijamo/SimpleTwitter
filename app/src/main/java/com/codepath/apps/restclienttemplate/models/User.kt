@@ -1,10 +1,13 @@
 package com.codepath.apps.restclienttemplate.models
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity;
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
 import org.json.JSONObject
 
+@Parcelize
 @Entity
 data class User(
     @ColumnInfo
@@ -22,7 +25,7 @@ data class User(
 
     @ColumnInfo
     var isVerified: Boolean,
-){
+) : Parcelable {
     companion object {
         fun fromJson(jsonObject: JSONObject): User {
 

@@ -1,9 +1,11 @@
 package com.codepath.apps.restclienttemplate.models
+import android.os.Parcelable
 import androidx.room.Entity;
 
 import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Long.MAX_VALUE
@@ -12,27 +14,23 @@ import kotlin.collections.ArrayList
 
 var max_id = MAX_VALUE
 
+@Parcelize
 @Entity
-data class Tweet (
+data class Tweet(
     @ColumnInfo
     var body: String,
-
     @ColumnInfo
     var createdAt: String,
-
     @ColumnInfo
     var user: User?,
-
     @ColumnInfo
     @PrimaryKey
     var id: Long,
-
     @ColumnInfo
     var retweetCount: Int,
-
     @ColumnInfo
     var favoriteCount: Int,
-){
+) : Parcelable {
     companion object {
         fun fromJson(jsonObject: JSONObject) : Tweet {
 
