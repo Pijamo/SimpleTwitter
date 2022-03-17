@@ -6,9 +6,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +18,7 @@ import com.codepath.apps.restclienttemplate.models.Tweet
 import com.codepath.apps.restclienttemplate.models.max_id
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import okhttp3.Headers
+import org.json.JSONArray
 import org.json.JSONException
 
 
@@ -107,14 +106,33 @@ class TimelineActivity : AppCompatActivity() {
 
         fm.setFragmentResultListener("requestKey", this) { requestKey, bundle ->
 
-            val tweet = bundle.get("tweet") as Tweet
+            val result = bundle.getLong("bundleKey")
 
-            tweets.add(0, tweet)
 
-            adapter.notifyItemInserted(0)
-            rvTweets.smoothScrollToPosition(0)
+            client.getFullTweet(result.toString(), object : JsonHttpResponseHandler(){
+                override fun onSuccess(statusCode: Int, headers: Headers?, json: JSON) {
 
-            Log.i(TAG, bundle.toString())
+                    val twit = json.jsonObject.getJSONArray("data").getJSONObject(0)
+                    val user = json.jsonObject.getJSONObject("includes").getJSONArray("users")
+
+                    val tweet = Tweet.fromJson(twit, user)
+
+                    tweets.add(0, tweet)
+
+                    adapter.notifyItemInserted(0)
+                    rvTweets.smoothScrollToPosition(0)
+                }
+
+
+                override fun onFailure(
+                    statusCode: Int,
+                    headers: Headers?,
+                    response: String?,
+                    throwable: Throwable?
+                ) {
+                    Log.i("User", "onFailure $statusCode")
+                }
+            })
         }
 
         composeFragment?.show(fm, "fragment_edit_name")
@@ -154,20 +172,7 @@ class TimelineActivity : AppCompatActivity() {
 
                 val jsonArray = json.jsonArray
 
-                try {
-                    adapter.clear()
-                    val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
-
-                    tweets.addAll(listOfNewTweetsRetrieved)
-
-                    adapter.notifyDataSetChanged()
-
-                    Log.i("idTest", "Max_id = $max_id")
-
-                    swipeContainer.isRefreshing = false
-                } catch (e: JSONException) {
-                    Log.e(TAG, "JSON Exception $e")
-                }
+                getFullTweet(jsonArray)
             }
 
 
@@ -183,6 +188,52 @@ class TimelineActivity : AppCompatActivity() {
         })
     }
 
+    private fun getFullTweet(jsonArray: JSONArray) {
+
+        var tweetID: String = ""
+
+        for (i in 0 until  jsonArray.length()) {
+            val id = jsonArray.getJSONObject(i).getLong("id")
+
+            if(tweetID != ""){
+                tweetID += ","
+            }
+            tweetID += id.toString()
+        }
+
+        client.getFullTweet(tweetID, object : JsonHttpResponseHandler(){
+            override fun onSuccess(statusCode: Int, headers: Headers?, json: JSON) {
+                Log.i("fullTweet", "onSuccess! ${json.jsonObject}")
+
+                val jsonArray = json.jsonObject
+
+                try {
+                    //adapter.clear()
+                    val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
+
+                    tweets.addAll(listOfNewTweetsRetrieved)
+
+                    adapter.notifyDataSetChanged()
+
+                    Log.i("idTest", "Max_id = $max_id")
+
+                    swipeContainer.isRefreshing = false
+                } catch (e: JSONException) {
+                    Log.e(TAG, "JSON Exception $e")
+                }
+            }
+
+            override fun onFailure(
+                statusCode: Int,
+                headers: Headers?,
+                response: String?,
+                throwable: Throwable?
+            ) {
+                Log.i("fullTweet", "onFailure $statusCode")
+            }
+        })
+    }
+
     fun loadNextDataFromApi(offset: Int) {
         Log.i("loadMore", "ScrollEntered")
         client.getHomeTimeline(
@@ -193,17 +244,19 @@ class TimelineActivity : AppCompatActivity() {
 
                     val jsonArray = json.jsonArray
 
-                    try {
-                        val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray)
-                        tweets.addAll(listOfNewTweetsRetrieved)
-                        adapter.notifyDataSetChanged()
+                    getFullTweet(jsonArray)
 
-                        Log.i("loadMore", "Max_id = $max_id")
-
-                        swipeContainer.isRefreshing = false
-                    } catch (e: JSONException) {
-                        Log.e("loadMore", "JSON Exception $e")
-                    }
+//                    try {
+//                        val listOfNewTweetsRetrieved = Tweet.fromJsonArray(jsonArray.getJSONObject(0))
+//                        tweets.addAll(listOfNewTweetsRetrieved)
+//                        adapter.notifyDataSetChanged()
+//
+//                        Log.i("loadMore", "Max_id = $max_id")
+//
+//                        swipeContainer.isRefreshing = false
+//                    } catch (e: JSONException) {
+//                        Log.e("loadMore", "JSON Exception $e")
+//                    }
                 }
 
                 override fun onFailure(

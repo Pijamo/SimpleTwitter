@@ -31,8 +31,8 @@ data class User(
 
             val user_id = jsonObject.getLong("id")
             val name = jsonObject.getString("name")
-            val screenName = "@" + jsonObject.getString("screen_name")
-            val publicImageUrl = jsonObject.getString("profile_image_url_https")
+            val screenName = "@" + jsonObject.getString("username")
+            val publicImageUrl = jsonObject.getString("profile_image_url")
             val isVerified = jsonObject.getBoolean("verified")
 
             return User(user_id, name, screenName, publicImageUrl, isVerified)

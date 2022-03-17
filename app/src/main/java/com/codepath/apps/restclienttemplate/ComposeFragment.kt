@@ -9,10 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.bumptech.glide.Glide
-import com.codepath.apps.restclienttemplate.models.Tweet
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import okhttp3.Headers
@@ -54,17 +54,12 @@ class ComposeFragment() : DialogFragment(){
     }
 
 
-    private fun sendData(tweet: Tweet) {
+    private fun sendData(tweetID: Long) {
 
-        var bundle = Bundle()
-        bundle.putParcelable("tweet", tweet)
-        val result = "result"
-        var intent = Intent()
-
-        intent.putExtra("tweet", tweet)
+        val result = tweetID
 
         // Use the Kotlin extension in the fragment-ktx artifact
-        setFragmentResult("requestKey", bundle)
+        setFragmentResult("requestKey", bundleOf("bundleKey" to result))
         dismiss()
     }
 
@@ -133,9 +128,7 @@ class ComposeFragment() : DialogFragment(){
                     override fun onSuccess(statusCode: Int, headers: Headers?, json: JSON) {
                         Log.i(TAG, "Successfully published tweet!")
 
-                        val tweet = Tweet.fromJson(json.jsonObject)
-
-                        sendData(tweet)
+                        sendData(json.jsonObject.getLong("id"))
                     }
 
                     override fun onFailure(

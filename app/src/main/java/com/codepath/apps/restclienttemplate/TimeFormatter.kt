@@ -1,3 +1,4 @@
+import android.util.Log
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -11,9 +12,14 @@ import java.util.*
 object TimeFormatter {
     fun getTimeDifference(rawJsonDate: String?): String {
         var time = ""
-        val twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy"
+
+        val twitterFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+
         val format = SimpleDateFormat(twitterFormat, Locale.ENGLISH)
         format.isLenient = true
+
+
+        Log.i("Time", format.parse(rawJsonDate).time.toString())
         try {
             val diff = (System.currentTimeMillis() - format.parse(rawJsonDate).time) / 1000
             if (diff < 5) time = "Just now" else if (diff < 60) time =
@@ -40,6 +46,8 @@ object TimeFormatter {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
+
+        Log.i("Time", time)
         return time
     }
 

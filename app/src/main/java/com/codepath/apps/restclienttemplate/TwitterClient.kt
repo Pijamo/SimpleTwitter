@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate
 
 import android.content.Context
 import android.util.Log
+import com.codepath.apps.restclienttemplate.models.Tweet
 import com.codepath.asynchttpclient.RequestParams
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import com.codepath.oauth.OAuthBaseClient
@@ -35,7 +36,7 @@ class TwitterClient(context: Context) : OAuthBaseClient(
     companion object {
         val REST_API_INSTANCE = TwitterApi.instance()
 
-        const val REST_URL = "https://api.twitter.com/1.1"
+        const val REST_URL = "https://api.twitter.com"
 
         const val REST_CONSUMER_KEY =
             BuildConfig.CONSUMER_KEY // Change this inside apikey.properties
@@ -54,7 +55,7 @@ class TwitterClient(context: Context) : OAuthBaseClient(
 
     fun getHomeTimeline(handler: JsonHttpResponseHandler) {
         val apiUrl =
-            getApiUrl("statuses/home_timeline.json")
+            getApiUrl("1.1/statuses/home_timeline.json")
 
         // Can specify query string params directly or through RequestParams.
         val params = RequestParams()
@@ -64,9 +65,37 @@ class TwitterClient(context: Context) : OAuthBaseClient(
         client.get(apiUrl, params, handler)
     }
 
+    fun getFullTweet(id: String, handler: JsonHttpResponseHandler) {
+        val apiUrl = getApiUrl("2/tweets")
+
+        val tweetFields = ArrayList<String>()
+
+        tweetFields.add("created_at")
+        tweetFields.add("author_id")
+        tweetFields.add("public_metrics")
+
+        val userFields = ArrayList<String>()
+
+        userFields.add("id")
+        userFields.add("name")
+        userFields.add("username")
+        userFields.add("verified")
+        userFields.add("profile_image_url")
+
+
+        // Can specify query string params directly or through RequestParams.
+        val params = RequestParams()
+        params.put("ids", id)
+        params.put("tweet.fields", tweetFields.joinToString(","))
+        params.put("user.fields", userFields.joinToString(","))
+        params.put("expansions", "author_id")
+
+        client.get(apiUrl, params, handler)
+    }
+
     fun publishTweet(tweetContent: String, handler: JsonHttpResponseHandler) {
         val apiUrl =
-            getApiUrl("statuses/update.json")
+            getApiUrl("1.1/statuses/update.json")
 
         // Can specify query string params directly or through RequestParams.
         val params = RequestParams()
@@ -79,7 +108,7 @@ class TwitterClient(context: Context) : OAuthBaseClient(
         Log.i("loadMore", "We Entered Rest")
 
         val apiUrl =
-            getApiUrl("statuses/home_timeline.json")
+            getApiUrl("1.1/statuses/home_timeline.json")
 
         // Can specify query string params directly or through RequestParams.
         val params = RequestParams()
@@ -91,7 +120,7 @@ class TwitterClient(context: Context) : OAuthBaseClient(
 
     fun getUserDetails(handler: JsonHttpResponseHandler){
 
-        val apiUrl = getApiUrl("account/verify_credentials.json")
+        val apiUrl = getApiUrl("1.1/account/verify_credentials.json")
 
         val params = RequestParams()
 
