@@ -88,6 +88,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="240"/>
+            android:text="280"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

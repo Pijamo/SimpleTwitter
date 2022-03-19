@@ -58,7 +58,7 @@ object TimeFormatter {
      */
     fun getTimeStamp(rawJsonDate: String?): String {
         var time = ""
-        val twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy"
+        val twitterFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         val format = SimpleDateFormat(twitterFormat, Locale.ENGLISH)
         format.isLenient = true
         try {

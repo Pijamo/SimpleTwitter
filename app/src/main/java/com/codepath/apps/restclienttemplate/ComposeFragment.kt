@@ -71,7 +71,7 @@ class ComposeFragment() : DialogFragment(){
 
         etCompose.addTextChangedListener(object : TextWatcher {
 
-            var max_length = 240;
+            var max_length = 280;
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 // Fires right as the text is being changed (even supplies the range of text)
